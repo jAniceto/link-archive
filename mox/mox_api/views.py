@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
 from mox_api.models import Link
 from mox_api.serializers import LinkSerializer
+from mox_api.utils import get_title_from_url
 
 
 @api_view(['GET'])
@@ -24,6 +25,9 @@ def link_list(request):
         return Response(serializer.data)
 
     elif request.method == 'POST':
+        # Extract title from URL
+        request.data['title'] = get_title_from_url(request.data['url'])
+        
         serializer = LinkSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
